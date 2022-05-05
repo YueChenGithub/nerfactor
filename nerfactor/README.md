@@ -48,7 +48,21 @@ run.
     ckpt="$outroot/lr1e-2/checkpoints/ckpt-50"
     REPO_DIR="$repo_dir" "$repo_dir/nerfactor/explore_brdf_space_run.sh" "$gpus" --ckpt="$ckpt"
     ```
+    ```bash
+    gpus='0'
 
+    # I. Learning BRDF Priors (training and validation)
+    proj_root='/home/y/Desktop'
+    repo_dir="$proj_root/nerfactor"
+    data_root="$proj_root/data/brdf_merl_npz/ims256_envmaph16_spp1"
+    outroot="$proj_root/output/train/merl"
+    viewer_prefix='http://vision38.csail.mit.edu' # or just use ''
+    REPO_DIR="$repo_dir" "$repo_dir/nerfactor/trainvali_run.sh" "$gpus" --config='brdf.ini' --config_override="data_root=$data_root,outroot=$outroot,viewer_prefix=$viewer_prefix"
+
+    # II. Exploring the Learned Space (validation and testing)
+    ckpt="$outroot/lr1e-2/checkpoints/ckpt-50"
+    REPO_DIR="$repo_dir" "$repo_dir/nerfactor/explore_brdf_space_run.sh" "$gpus" --ckpt="$ckpt"
+    ```
 1. Train a vanilla NeRF, optionally using multiple GPUs:
     ```bash
     scene='hotdog_2163'
@@ -80,6 +94,38 @@ run.
     # Optionally, render the test trajectory with the trained NeRF
     ckpt="$outroot/lr$lr/checkpoints/ckpt-20"
     REPO_DIR="$repo_dir" "$repo_dir/nerfactor/nerf_test_run.sh" "$gpus" --ckpt="$ckpt"
+    ```
+   
+    ```bash
+    scene='hotdog_2163'
+    gpus='0'
+    proj_root='/home/y/Desktop'
+    repo_dir="$proj_root/nerfactor"
+    viewer_prefix='http://vision38.csail.mit.edu' # or just use ''
+    data_root="$proj_root/data/selected/$scene"
+    if [[ "$scene" == scan* ]]; then
+        # DTU scenes
+        imh='256'
+    else
+        imh='256'
+    fi
+    if [[ "$scene" == pinecone || "$scene" == vasedeck || "$scene" == scan* ]]; then
+        # Real scenes: NeRF & DTU
+        near='0.1'; far='2'
+    else
+        near='2'; far='6'
+    fi
+    if [[ "$scene" == ficus* || "$scene" == hotdog_probe_16-00_latlongmap ]]; then
+        lr='1e-4'
+    else
+        lr='5e-4'
+    fi
+    outroot="$proj_root/output/train/${scene}_nerf"
+    REPO_DIR="$repo_dir" "$repo_dir/nerfactor/trainvali_run.sh" "$gpus" --config='nerf.ini' --config_override="data_root=$data_root,imh=$imh,near=$near,far=$far,lr=$lr,outroot=$outroot,viewer_prefix=$viewer_prefix"
+
+    # Optionally, render the test trajectory with the trained NeRF
+    # ckpt="$outroot/lr$lr/checkpoints/ckpt-20"
+    # REPO_DIR="$repo_dir" "$repo_dir/nerfactor/nerf_test_run.sh" "$gpus" --ckpt="$ckpt"
     ```
    Check the quality of this NeRF geometry by inspecting the visualization HTML
    for the alpha and normal maps. You might need to re-run this with another
@@ -119,6 +165,41 @@ run.
     mlp_chunk='375000' # bump this up until GPU gets OOM for faster computation
     REPO_DIR="$repo_dir" "$repo_dir/nerfactor/geometry_from_nerf_run.sh" "$gpus" --data_root="$data_root" --trained_nerf="$trained_nerf" --out_root="$out_root" --imh="$imh" --scene_bbox="$scene_bbox" --occu_thres="$occu_thres" --mlp_chunk="$mlp_chunk"
     ```
+
+    ```bash
+    scene='hotdog_2163'
+    gpus='0'
+    proj_root='/home/y/Desktop'
+    repo_dir="$proj_root/nerfactor"
+    viewer_prefix=''
+    data_root="$proj_root/data/selected/$scene"
+    if [[ "$scene" == scan* ]]; then
+        # DTU scenes
+        imh='256'
+    else
+        imh='256'
+    fi
+    if [[ "$scene" == ficus* || "$scene" == hotdog_probe_16-00_latlongmap ]]; then
+        lr='1e-4'
+    else
+        lr='5e-4'
+    fi
+    trained_nerf="$proj_root/output/train/${scene}_nerf/lr$lr"
+    occu_thres='0.5'
+    if [[ "$scene" == pinecone* || "$scene" == scan* ]]; then
+        # pinecone and DTU scenes
+        scene_bbox='-0.3,0.3,-0.3,0.3,-0.3,0.3'
+    elif [[ "$scene" == vasedeck* ]]; then
+        scene_bbox='-0.2,0.2,-0.4,0.4,-0.5,0.5'
+    else
+        # We don't need to bound the synthetic scenes
+        scene_bbox=''
+    fi
+    out_root="$proj_root/output/surf/$scene"
+    mlp_chunk='275000' # bump this up until GPU gets OOM for faster computation
+    REPO_DIR="$repo_dir" "$repo_dir/nerfactor/geometry_from_nerf_run.sh" "$gpus" --data_root="$data_root" --trained_nerf="$trained_nerf" --out_root="$out_root" --imh="$imh" --scene_bbox="$scene_bbox" --occu_thres="$occu_thres" --mlp_chunk="$mlp_chunk"
+    ```
+   
    For portability, this step runs sequentially, processing one view after
    another. If your infrastructure supports distributing jobs easily over
    multiple GPUs, you should consider having one GPU process one view to

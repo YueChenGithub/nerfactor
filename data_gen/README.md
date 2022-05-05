@@ -13,17 +13,25 @@ This folder contains code and instructions for:
    [the MERL BRDF dataset](https://cdfg.csail.mit.edu/wojciech/brdfdatabase)
    to `$proj_root/data/brdf_merl/`.
 
-1. Convert the dataset into our format:
-    ```bash
-    proj_root='/data/vision/billf/intrinsic/sim'
-    repo_dir="$proj_root/code/nerfactor"
-    indir="$proj_root/data/brdf_merl"
-    ims='256'
-    outdir="$proj_root/data/brdf_merl_npz/ims${ims}_envmaph16_spp1"
-    REPO_DIR="$repo_dir" "$repo_dir"/data_gen/merl/make_dataset_run.sh "$indir" "$ims" "$outdir"
-    ```
-   In this conversion process, the BRDFs are visualized to `$outdir/vis`,
-   in the forms of characteristic clices and renders.
+   1. Convert the dataset into our format:
+       ```bash
+       proj_root='/data/vision/billf/intrinsic/sim'
+       repo_dir="$proj_root/code/nerfactor"
+       indir="$proj_root/data/brdf_merl"
+       ims='256'
+       outdir="$proj_root/data/brdf_merl_npz/ims${ims}_envmaph16_spp1"
+       REPO_DIR="$repo_dir" "$repo_dir"/data_gen/merl/make_dataset_run.sh "$indir" "$ims" "$outdir"
+       ```
+      ```bash
+      proj_root='/home/y/Desktop'
+      repo_dir="$proj_root/nerfactor"
+      indir="$proj_root/data/brdf_merl"
+      ims='512'
+      outdir="$proj_root/data/brdf_merl_npz/ims${ims}_envmaph16_spp1"
+      REPO_DIR="$repo_dir" "$repo_dir"/data_gen/merl/make_dataset_run.sh "$indir" "$ims" "$outdir"
+      ```
+      In this conversion process, the BRDFs are visualized to `$outdir/vis`,
+      in the forms of characteristic clices and renders.
 
 
 ## NeRF: Synthetic Data

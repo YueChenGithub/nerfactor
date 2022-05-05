@@ -1,0 +1,21 @@
+name: nerfactor_cuda11
+channels:
+    - conda-forge
+    - anaconda
+dependencies:
+    - python
+    - pip
+    - numpy
+    - scipy
+    - matplotlib
+    - ipython
+    - tqdm
+    - pillow
+    - opencv
+    - rtree
+    - pyembree
+    - pip:
+        - trimesh
+        - tensorflow
+    - cudatoolkit
+    - cudnn
