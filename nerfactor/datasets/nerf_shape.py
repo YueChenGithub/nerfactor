@@ -81,6 +81,9 @@ class Dataset(BaseDataset):
         hw = tf.tile(tf.expand_dims(hw, axis=0), (tf.shape(rgb)[0], 1))
         return id_, hw, rayo, rayd, rgb, alpha, xyz, normal, lvis
 
+
+
+
     def _sample_rays(
             self, rayo, rayd, rgb, alpha, xyz, normal, lvis, alpha_thres=0.9):
         # Shortcircuit if need all rays
@@ -137,6 +140,7 @@ class Dataset(BaseDataset):
         id_ = self._parse_id(metadata_path)
         # Rays
         metadata = ioutil.read_json(metadata_path)
+
         imw = int(imh / metadata['imh'] * metadata['imw'])
         cam_to_world = np.array([
             float(x) for x in metadata['cam_transform_mat'].split(',')
@@ -172,7 +176,7 @@ class Dataset(BaseDataset):
             else:
                 alpha = rgba[:, :, 3] # ground-truth alpha
         # Resize
-        if imh != xyz.shape[0]:
+        if imh != xyz.shape[0] or imh != rgb.shape[0]: #Yue
             xyz = xm.img.resize(xyz, new_h=imh)
             normal = xm.img.resize(normal, new_h=imh)
             lvis = xm.img.resize(lvis, new_h=imh)

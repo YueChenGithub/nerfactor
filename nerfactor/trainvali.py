@@ -33,7 +33,7 @@ from nerfactor.util import logging as logutil, io as ioutil, \
 flags.DEFINE_string(
     'config', 'nerf.ini', "base .ini file in config/ or a full path")
 flags.DEFINE_string('config_override', '', "e.g., 'key1=value1,key2=value2'")
-flags.DEFINE_boolean('debug', False, "debug mode switch")
+flags.DEFINE_boolean('debug', False, "debug mode switch") # Yue
 flags.DEFINE_enum(
     'device', 'gpu', ['cpu', 'gpu'], "running on what type of device(s)")
 FLAGS = flags.FLAGS
@@ -82,7 +82,17 @@ def main(_):
     global_bs_train = dataset_train.bs
     no_batch = config.getboolean('DEFAULT', 'no_batch')
     datapipe_train = dataset_train.build_pipeline(no_batch=no_batch)
-    datapipe_train = strategy.experimental_distribute_dataset(datapipe_train)
+    datapipe_train = strategy.experimental_distribute_dataset(datapipe_train) #Yue
+
+    # dataset = datapipe_train #Test by Yue
+    # dataset = dataset.batch(1)
+    #
+    # for element in dataset:
+    #     a = element
+    # b = a[0]
+    # print(b)
+
+
 
     # Make validation dataset
     dataset_vali = Dataset(config, 'vali', debug=FLAGS.debug)
