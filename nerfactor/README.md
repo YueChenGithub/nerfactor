@@ -274,7 +274,7 @@ REPO_DIR="$repo_dir" "$repo_dir/nerfactor/test_run.sh" "$gpus" --ckpt="$ckpt" --
 scene='hotdog_2163'
 gpus='0'
 model='nerfactor'
-overwrite='True'
+overwrite='False'
 proj_root='/home/y/Desktop'
 repo_dir="$proj_root/nerfactor"
 viewer_prefix=''
