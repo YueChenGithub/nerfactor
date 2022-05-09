@@ -343,7 +343,23 @@ scene='hotdog_2163'
 gpus='1'
 model='nerfactor'
 overwrite='True'
-proj_root='/mnt/raid/scanpa/yue_test'
+proj_root='/home/scanpa/yue_test'
+repo_dir="$proj_root/nerfactor"
+viewer_prefix=''
+outroot="$proj_root/output/train/${scene}_$model"
+ckpt="$outroot/lr5e-3/checkpoints/ckpt-10"
+color_correct_albedo='true'
+REPO_DIR="$repo_dir" "$repo_dir/nerfactor/test_run.sh" "$gpus" --ckpt="$ckpt" --color_correct_albedo="$color_correct_albedo"
+
+```
+
+```bash
+# official step III
+scene='hotdog_2163'
+gpus='1'
+model='nerfactor_official'
+overwrite='True'
+proj_root='/home/y/Desktop'
 repo_dir="$proj_root/nerfactor"
 viewer_prefix=''
 outroot="$proj_root/output/train/${scene}_$model"
