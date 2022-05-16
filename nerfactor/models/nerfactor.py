@@ -515,9 +515,9 @@ class Model(ShapeModel):
         if self.shape_mode in ('scratch', 'finetune', 'pretrained_geo'):
             # Predicted values should be close to initial values
             normal_loss = tf.keras.losses.MSE(normal_gt, normal_pred) # N
-            lvis_loss = tf.keras.losses.MSE(lvis_gt, lvis_pred) # N
+            # lvis_loss = tf.keras.losses.MSE(lvis_gt, lvis_pred) # N
             loss += normal_loss_weight * normal_loss
-            loss += lvis_loss_weight * lvis_loss
+            # loss += lvis_loss_weight * lvis_loss
             # Predicted values should be smooth
             if normal_jitter is not None:
                 normal_smooth_loss = smooth_loss(normal_pred, normal_jitter) # N
