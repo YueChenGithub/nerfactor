@@ -274,7 +274,7 @@ REPO_DIR="$repo_dir" "$repo_dir/nerfactor/test_run.sh" "$gpus" --ckpt="$ckpt" --
 scene='hotdog_2163'
 gpus='0'
 model='nerfactor'
-overwrite='False'
+overwrite='True'
 proj_root='/home/y/Desktop'
 repo_dir="$proj_root/nerfactor"
 viewer_prefix=''
@@ -319,7 +319,7 @@ else
     xyz_jitter_std=0.01
 fi
 test_envmap_dir="$proj_root/data/envmaps/for-render_h16/test"
-shape_mode='finetune'
+shape_mode='pretrained_geo'
 outroot="$proj_root/output/train/${scene}_$model"
 REPO_DIR="$repo_dir" "$repo_dir/nerfactor/trainvali_run.sh" "$gpus" --config="$model.ini" --config_override="data_root=$data_root,imh=$imh,near=$near,far=$far,use_nerf_alpha=$use_nerf_alpha,data_nerf_root=$surf_root,shape_model_ckpt=$shape_ckpt,brdf_model_ckpt=$brdf_ckpt,xyz_jitter_std=$xyz_jitter_std,test_envmap_dir=$test_envmap_dir,shape_mode=$shape_mode,outroot=$outroot,viewer_prefix=$viewer_prefix,overwrite=$overwrite"
 ```
@@ -353,7 +353,7 @@ REPO_DIR="$repo_dir" "$repo_dir/nerfactor/test_run.sh" "$gpus" --ckpt="$ckpt" --
 
 ```
 
-```bash
+```
 # official step III
 scene='hotdog_2163'
 gpus='1'

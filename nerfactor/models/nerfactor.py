@@ -160,6 +160,16 @@ class Model(ShapeModel):
             net['normal_out'] = shape_model.net['normal_out']
             net['lvis_mlp'] = shape_model.net['lvis_mlp']
             net['lvis_out'] = shape_model.net['lvis_out']
+        elif self.shape_mode == 'pretrained_geo':
+            shape_model = ShapeModel(self.config_shape)
+            ioutil.restore_model(shape_model, self.shape_model_ckpt)
+            shape_model.trainable = True
+            net['normal_mlp'] = shape_model.net['normal_mlp']
+            net['normal_out'] = shape_model.net['normal_out']
+            net['lvis_mlp'] = mlp.Network(
+                [mlp_width] * mlp_depth, act=['relu'] * mlp_depth,
+                skip_at=[mlp_skip_at])
+            net['lvis_out'] = mlp.Network([1], act=['sigmoid']) # [0, 1]
         elif self.shape_mode == 'nerf':
             pass
         else:
@@ -502,7 +512,7 @@ class Model(ShapeModel):
         if mode == 'vali':
             return loss
         # If we modify the geometry
-        if self.shape_mode in ('scratch', 'finetune'):
+        if self.shape_mode in ('scratch', 'finetune', 'pretrained_geo'):
             # Predicted values should be close to initial values
             normal_loss = tf.keras.losses.MSE(normal_gt, normal_pred) # N
             lvis_loss = tf.keras.losses.MSE(lvis_gt, lvis_pred) # N
