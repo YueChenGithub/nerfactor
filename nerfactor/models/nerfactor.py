@@ -337,7 +337,9 @@ class Model(ShapeModel):
         areas = tf.reshape(self.lareas, (1, -1, 1)) # 1xLx1
         # NOTE: unnecessary if light_vis already encodes it, but won't hurt
         front_lit = tf.cast(cos > 0, tf.float32)
-        lvis = front_lit * light_vis # NxL
+        # lvis = front_lit * light_vis # NxL
+        lvis = tf.ones_like(front_lit * light_vis)  # fake lvis
+
 
         def integrate(light):
             light_flat = tf.reshape(light, (-1, 3)) # Lx3
